@@ -54,7 +54,12 @@ function applySecurityHeaders(
     // framing and drop X-Frame-Options there. The embeds contain no auth or
     // state-changing actions (search inputs + outbound links only), so the
     // clickjacking exposure is minimal. Everything else keeps DENY.
-    if (key === "X-Frame-Options" && opts?.frameable) continue;
+    // NOTE: next.config.ts headers() also sets X-Frame-Options: DENY, and
+    // skipping .set() here does NOT remove it — delete explicitly.
+    if (key === "X-Frame-Options" && opts?.frameable) {
+      response.headers.delete("X-Frame-Options");
+      continue;
+    }
     if (key === "Content-Security-Policy" && opts?.frameable) {
       response.headers.set(
         key,
