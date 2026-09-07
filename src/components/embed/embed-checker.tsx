@@ -11,8 +11,7 @@ interface HerbResult {
   scientific_name: string;
 }
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://herbally.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://herbally.app";
 
 /**
  * Compact herb↔drug checker for third-party iframes.
@@ -156,9 +155,7 @@ export function EmbedChecker() {
                 }}
                 className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
               >
-                <span className="font-medium text-foreground">
-                  {herb.name}
-                </span>
+                <span className="font-medium text-foreground">{herb.name}</span>
                 <span className="text-xs italic text-muted-foreground">
                   {herb.scientific_name}
                 </span>
