@@ -7,6 +7,7 @@ import { siteUrl } from "@/lib/seo/site-url";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { WebPageSchema } from "@/components/seo/webpage-schema";
 import { InteractionExplainer } from "@/components/herbs/interaction-explainer";
+import { EmbedSnippet } from "@/components/embed/embed-snippet";
 import { Button } from "@/components/ui/button";
 
 export const generateMetadata = () =>
@@ -87,6 +88,14 @@ export default async function HerbDrugInteractionsPage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="mt-10 rounded-2xl border bg-muted/30 p-6">
+        <h2 className="text-xl font-semibold text-foreground">
+          {t("embedTitle")}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t("embedBody")}</p>
+        <EmbedSnippet />
       </section>
 
       <section className="mt-10 rounded-2xl border bg-muted/30 p-6">
