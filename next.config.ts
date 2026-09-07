@@ -46,9 +46,13 @@ const nextConfig: NextConfig = {
   // and could be framed/fetched without the same protections. Apply the same
   // baseline security headers to static assets here at the config level so the
   // protection is uniform regardless of the proxy matcher.
+  // NOTE (embed framing): X-Frame-Options and the CSP frame-ancestors
+  // directive are deliberately ABSENT here — they are owned exclusively by
+  // src/proxy.ts, which must exempt /embed/* (partner iframes). Config-level
+  // headers merge over middleware deletions, so allowlisting there is the
+  // only way to un-frame a route.
   async headers() {
     const securityHeaders = [
-      { key: "X-Frame-Options", value: "DENY" },
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
       {
@@ -65,7 +69,7 @@ const nextConfig: NextConfig = {
           "style-src 'self' 'unsafe-inline'",
           "font-src 'self' data:",
           "frame-src *.stripe.com",
-          "frame-ancestors 'none'",
+          // No frame-ancestors here — owned by the proxy (see note above).
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
