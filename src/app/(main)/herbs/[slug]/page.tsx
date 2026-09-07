@@ -29,6 +29,7 @@ import { getLocaleFromRequest } from "@/lib/i18n/server-locale";
 import { type Locale } from "@/lib/i18n/config";
 
 import { HerbHeroV2 } from "@/components/herbs/herb-hero-v2";
+import { DangerousHerbBanner } from "@/components/herbs/dangerous-herb-banner";
 import { HerbDetailTabs } from "@/components/herbs/herb-detail-tabs";
 import { HerbOverviewPanel } from "@/components/herbs/herb-overview-panel";
 import { HerbUsesPanel } from "@/components/herbs/herb-uses-panel";
@@ -545,6 +546,9 @@ export default async function HerbDetailPage({ params }: Props) {
       </p>
 
       {/* New Hero */}
+      {/* Safety-first: lethal plants (abrin, aconite…) get a hard "do not
+          use" banner above the fold, before any hero/benefits content. */}
+      <DangerousHerbBanner slug={slug} />
       <HerbHeroV2
         herb={{ ...herb, evidence_level: evidenceLevel }}
         provenance={herb.provenance as Record<string, unknown> | null}
