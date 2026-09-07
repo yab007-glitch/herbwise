@@ -11,6 +11,7 @@ import { HerbSchema } from "@/components/seo/herb-schema";
 import { WebPageSchema } from "@/components/seo/webpage-schema";
 import { BreadcrumbListSchema } from "@/components/seo/breadcrumb-list-schema";
 import { HerbFAQSchema } from "@/components/seo/herb-faq-schema";
+import { buildHerbFallbackFaqs } from "@/lib/seo/herb-faq-fallback";
 import { HerbFaqSection } from "@/components/herbs/herb-faq-section";
 import { CitationsList, SourceAttribution } from "@/components/herbs/citations";
 import { generateMonograph } from "@/lib/data/generate-monograph";
@@ -357,24 +358,44 @@ export default async function HerbDetailPage({ params }: Props) {
   const interactions = (herb.drug_interactions ||
     []) as import("@/components/herbs/interactions-table").Interaction[];
 
-  // Fetch pre-generated FAQs for Featured Snippet optimization
+  // Fetch pre-generated FAQs for Featured Snippet optimization.
+  // Overlays translations.fr (question/answer) on French pages; falls back
+  // to English per-field so partially translated rows never blank out.
+  // Locale is a parameter (not a closure over the later `locale` const) and
+  // part of the cache key so EN/FR entries can't poison each other.
   const getFaqsCached = unstable_cache(
-    async (herbId: string) => {
+    async (herbId: string, faqLocale: string) => {
       const supabase = getAnonClient();
       if (!supabase) return [];
       const { data } = await supabase
         .from("herb_faqs")
-        .select("question, answer, category")
+        .select("question, answer, category, translations")
         .eq("herb_id", herbId)
         .order("sort_order", { ascending: true })
         .limit(6);
-      return data || [];
+      const rows = (data || []) as unknown as Array<{
+        question: string;
+        answer: string;
+        category?: string;
+        translations?: {
+          fr?: { question?: string; answer?: string };
+        } | null;
+      }>;
+      if (faqLocale !== "fr") return rows;
+      return rows.map((r) => ({
+        ...r,
+        question: r.translations?.fr?.question || r.question,
+        answer: r.translations?.fr?.answer || r.answer,
+      }));
     },
     [`herb-faqs-${slug}`],
     { revalidate: 86400, tags: [`herb-faqs-${slug}`] }
   );
 
-  const preGeneratedFaqs = await getFaqsCached(herb.id);
+  const preGeneratedFaqs = await getFaqsCached(
+    herb.id,
+    await getLocaleFromRequest()
+  );
 
   const severityCounts = {
     contraindicated: interactions.filter(
@@ -390,6 +411,23 @@ export default async function HerbDetailPage({ params }: Props) {
   // Default locale for static generation; client-side locale switching handles user prefs
   const locale = await getLocaleFromRequest();
   const t = await getTranslations({ locale });
+  const tFaq = await getTranslations({ locale, namespace: "herbFaq" });
+
+  // Localized fallback FAQs, shared with the visible section via the same
+  // builder so JSON-LD and content match in both languages.
+  const fallbackFaqInput = {
+    herbName: herb.name,
+    scientificName: herb.scientific_name,
+    uses: [...(herb.traditional_uses || []), ...(herb.modern_uses || [])],
+    safetyNotes:
+      monograph?.safetyNotes?.join(". ") || herb.side_effects?.join(". ") || "",
+    pregnancyCategory: monograph?.pregnancyCategory || "insufficient",
+    drugInteractions: interactions.length,
+    commonNames: herb.common_names || [],
+  };
+  const fallbackFaqs = buildHerbFallbackFaqs(fallbackFaqInput, (key, params) =>
+    tFaq(key as never, params as never)
+  );
 
   const citations = formatCitations(
     herb.citations as unknown as CitationData[] | null,
@@ -483,6 +521,7 @@ export default async function HerbDetailPage({ params }: Props) {
         preGeneratedFaqs={
           preGeneratedFaqs.length > 0 ? preGeneratedFaqs : undefined
         }
+        fallbackFaqs={fallbackFaqs}
       />
 
       {/* Breadcrumbs */}
@@ -620,20 +659,20 @@ export default async function HerbDetailPage({ params }: Props) {
       {/* Calculator CTA — /calculator is the #1 converting page (4 clicks /
           92 imp). Funnel every herb view toward it with a crawlable link. */}
       <section
-        aria-label={`Calculate a safe dose of ${herb.name}`}
+        aria-label={t("herbDetail.calculatorCtaTitle", { name: herb.name })}
         className="rounded-2xl border bg-muted/50 p-4"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="font-semibold text-foreground">
-              Calculate a safe dose of {herb.name}
+              {t("herbDetail.calculatorCtaTitle", { name: herb.name })}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Free herbal dosage calculator — adult & child doses by weight.
+              {t("herbDetail.calculatorCtaBody")}
             </p>
           </div>
           <Button render={<Link href={`/calculator?herb=${slug}`} />}>
-            Calculate Dose
+            {t("herbDetail.calculateDose")}
           </Button>
         </div>
       </section>

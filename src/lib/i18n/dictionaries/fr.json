@@ -376,6 +376,27 @@
     "dosage": "Posologie",
     "safety": "Sécurité"
   },
+  "herbFaq": {
+    "heading": "Questions fréquentes",
+    "whatIs": "Quel est le nom anglais de {name} ?",
+    "knownAs": "{name} ({scientific}) est connu en anglais sous les noms {commons}. Il est traditionnellement utilisé pour {uses}.",
+    "usedFor": "Pour quoi {name} ({scientific}) est-il utilisé ?",
+    "usedForAnswer": "{name} ({scientific}) est traditionnellement utilisé pour {uses}. Consultez toujours un professionnel de santé avant usage.",
+    "usesFallback": "divers usages traditionnels et modernes",
+    "pregSafe": "{name} est généralement considéré comme sûr pendant la grossesse, mais consultez toujours votre professionnel de santé.",
+    "pregCaution": "{name} doit être utilisé avec prudence pendant la grossesse. Consultez votre professionnel de santé avant usage.",
+    "pregUnsafe": "{name} n'est pas recommandé pendant la grossesse. Consultez votre professionnel de santé pour des alternatives.",
+    "pregUnknown": "L'innocuité de {name} pendant la grossesse n'est pas établie de façon concluante. Consultez votre professionnel de santé avant usage.",
+    "interactSome": "Oui, {name} présente {count, plural, one {# interaction médicamenteuse connue} other {# interactions médicamenteuses connues}}. {notes}",
+    "interactFallbackNotes": "Consultez votre professionnel de santé ou pharmacien au sujet des interactions potentielles avec vos médicaments.",
+    "interactNone": "{name} ne présente pas d'interaction médicamenteuse majeure bien documentée dans notre base, mais informez toujours votre professionnel de santé de tous les compléments que vous prenez.",
+    "sideEffects": "Quels sont les effets secondaires de {name} ?",
+    "sideEffectsFallback": "Les effets secondaires de {name} sont généralement légers aux doses recommandées. Utilisez notre calculateur de dose gratuit pour rester dans les plages fondées sur des preuves, et consultez votre professionnel de santé pour un avis personnalisé.",
+    "doseQuestion": "Comment calculer une dose sûre de {name} ?",
+    "doseAnswer": "Utilisez le calculateur de posologie gratuit d'HerbAlly — saisissez la dose adulte de référence pour {name}, plus l'âge et le poids, pour obtenir une estimation pédiatrique selon Clark / Young. Ne dépassez jamais la dose adulte.",
+    "pregQuestion": "{name} est-il sûr pendant la grossesse ?",
+    "interactQuestion": "{name} interagit-il avec les médicaments ?"
+  },
   "about": {
     "title": "À propos de HerbAlly",
     "mission": "Notre Mission",
@@ -506,7 +527,9 @@
     "notFoundDesc": "La plante que vous recherchez n'existe pas ou a été supprimée.",
     "browseHerbs": "Parcourir toutes les plantes",
     "herbsAtAGlance": "Plantes en Bref",
-    "askHerbalist": "Demander à l'herboriste"
+    "askHerbalist": "Demander à l'herboriste",
+    "calculatorCtaTitle": "Calculer une dose sûre de {name}",
+    "calculatorCtaBody": "Calculateur gratuit de posologie — doses adultes et enfants selon le poids."
   },
   "search": {
     "placeholder": "Rechercher des herbes par nom, symptôme ou utilisation...",
