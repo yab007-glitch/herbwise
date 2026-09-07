@@ -1,3 +1,6 @@
+import { useTranslations } from "next-intl";
+import { buildHerbFallbackFaqs } from "@/lib/seo/herb-faq-fallback";
+
 interface FaqItem {
   question: string;
   answer: string;
@@ -38,61 +41,23 @@ export function HerbFaqSection({
   commonNames = [],
   preGeneratedFaqs,
 }: HerbFaqSectionProps) {
-  const topUses = uses.slice(0, 3).map((u) => u.toLowerCase());
-  const usesText =
-    topUses.length > 0
-      ? topUses.join(", ")
-      : "various traditional and modern applications";
-
-  const pregnancyText = (() => {
-    switch (pregnancyCategory) {
-      case "safe":
-        return `${herbName} is generally considered safe during pregnancy, but always consult your healthcare provider.`;
-      case "caution":
-        return `${herbName} should be used with caution during pregnancy. Consult your healthcare provider before use.`;
-      case "unsafe":
-        return `${herbName} is not recommended during pregnancy. Consult your healthcare provider for alternatives.`;
-      default:
-        return `The safety of ${herbName} during pregnancy has not been conclusively established. Consult your healthcare provider before use.`;
-    }
-  })();
-
-  const fallbackFaqs: FaqItem[] = [
-    ...(commonNames.length > 0
-      ? [
-          {
-            question: `What is ${herbName} in English?`,
-            answer: `${herbName} (${scientificName}) is known in English as ${commonNames.slice(0, 3).join(", ")}. It is traditionally used for ${usesText}.`,
-          },
-        ]
-      : [
-          {
-            question: `What is ${herbName} (${scientificName}) used for?`,
-            answer: `${herbName} (${scientificName}) is traditionally used for ${usesText}. Always consult a healthcare professional before use.`,
-          },
-        ]),
+  // Localized templates (herbFaq namespace) via the shared builder also
+  // used for the JSON-LD schema — visible content and markup match by
+  // construction in both languages.
+  const t = useTranslations("herbFaq");
+  const fallbackFaqs: FaqItem[] = buildHerbFallbackFaqs(
     {
-      question: `Is ${herbName} safe during pregnancy?`,
-      answer: pregnancyText,
+      herbName,
+      scientificName,
+      uses,
+      safetyNotes,
+      pregnancyCategory,
+      drugInteractions,
+      commonNames,
     },
-    {
-      question: `Does ${herbName} interact with medications?`,
-      answer:
-        drugInteractions > 0
-          ? `Yes, ${herbName} has ${drugInteractions} known drug interaction${drugInteractions > 1 ? "s" : ""}. ${safetyNotes || "Consult your healthcare provider or pharmacist about potential interactions with your medications."}`
-          : `${herbName} has no well-documented major drug interactions in our database, but always inform your healthcare provider about all supplements you take.`,
-    },
-    {
-      question: `What are the side effects of ${herbName}?`,
-      answer:
-        safetyNotes ||
-        `Side effects of ${herbName} are generally mild at recommended doses. Use our free dose calculator to stay within the evidence-based range, and consult your healthcare provider for personalized advice.`,
-    },
-    {
-      question: `How do I calculate a safe dose of ${herbName}?`,
-      answer: `Use HerbAlly's free herbal dosage calculator — enter the adult reference dose for ${herbName}, plus age and weight, to get a Clark's / Young's rule pediatric estimate. Never exceed the adult dose.`,
-    },
-  ];
+    (key, params) =>
+      t(key as Parameters<typeof t>[0], params as Parameters<typeof t>[1])
+  );
 
   const faqs: FaqItem[] =
     preGeneratedFaqs && preGeneratedFaqs.length > 0
@@ -108,7 +73,7 @@ export function HerbFaqSection({
         id="herb-faq-heading"
         className="mb-3 text-xl font-semibold text-foreground"
       >
-        Frequently asked questions
+        {t("heading")}
       </h2>
       <div className="divide-y rounded-2xl border">
         {faqs.map((faq) => (

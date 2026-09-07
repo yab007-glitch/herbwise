@@ -376,6 +376,27 @@
     "dosage": "Dosage",
     "safety": "Safety"
   },
+  "herbFaq": {
+    "heading": "Frequently asked questions",
+    "whatIs": "What is {name} in English?",
+    "knownAs": "{name} ({scientific}) is known in English as {commons}. It is traditionally used for {uses}.",
+    "usedFor": "What is {name} ({scientific}) used for?",
+    "usedForAnswer": "{name} ({scientific}) is traditionally used for {uses}. Always consult a healthcare professional before use.",
+    "usesFallback": "various traditional and modern applications",
+    "pregSafe": "{name} is generally considered safe during pregnancy, but always consult your healthcare provider.",
+    "pregCaution": "{name} should be used with caution during pregnancy. Consult your healthcare provider before use.",
+    "pregUnsafe": "{name} is not recommended during pregnancy. Consult your healthcare provider for alternatives.",
+    "pregUnknown": "The safety of {name} during pregnancy has not been conclusively established. Consult your healthcare provider before use.",
+    "interactSome": "Yes, {name} has {count, plural, one {# known drug interaction} other {# known drug interactions}}. {notes}",
+    "interactFallbackNotes": "Consult your healthcare provider or pharmacist about potential interactions with your medications.",
+    "interactNone": "{name} has no well-documented major drug interactions in our database, but always inform your healthcare provider about all supplements you take.",
+    "sideEffects": "What are the side effects of {name}?",
+    "sideEffectsFallback": "Side effects of {name} are generally mild at recommended doses. Use our free dose calculator to stay within the evidence-based range, and consult your healthcare provider for personalized advice.",
+    "doseQuestion": "How do I calculate a safe dose of {name}?",
+    "doseAnswer": "Use HerbAlly's free herbal dosage calculator — enter the adult reference dose for {name}, plus age and weight, to get a Clark's / Young's rule pediatric estimate. Never exceed the adult dose.",
+    "pregQuestion": "Is {name} safe during pregnancy?",
+    "interactQuestion": "Does {name} interact with medications?"
+  },
   "about": {
     "title": "About HerbAlly",
     "mission": "Our Mission",
@@ -506,7 +527,9 @@
     "notFoundDesc": "The herb you're looking for doesn't exist or may have been removed.",
     "browseHerbs": "Browse all herbs",
     "herbsAtAGlance": "Herbs at a Glance",
-    "askHerbalist": "Ask Herbalist"
+    "askHerbalist": "Ask Herbalist",
+    "calculatorCtaTitle": "Calculate a safe dose of {name}",
+    "calculatorCtaBody": "Free herbal dosage calculator — adult & child doses by weight."
   },
   "search": {
     "placeholder": "Search herbs by name, symptom, or use...",
