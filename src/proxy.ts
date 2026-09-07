@@ -45,8 +45,23 @@ const baseSecurityHeaders: Record<string, string> = {
   "Content-Security-Policy": buildCSP(),
 };
 
-function applySecurityHeaders(response: NextResponse): NextResponse {
+function applySecurityHeaders(
+  response: NextResponse,
+  opts?: { frameable?: boolean }
+): NextResponse {
   for (const [key, value] of Object.entries(baseSecurityHeaders)) {
+    // /embed/* tools are designed to run inside third-party iframes: allow
+    // framing and drop X-Frame-Options there. The embeds contain no auth or
+    // state-changing actions (search inputs + outbound links only), so the
+    // clickjacking exposure is minimal. Everything else keeps DENY.
+    if (key === "X-Frame-Options" && opts?.frameable) continue;
+    if (key === "Content-Security-Policy" && opts?.frameable) {
+      response.headers.set(
+        key,
+        value.replace("frame-ancestors 'none'", "frame-ancestors *")
+      );
+      continue;
+    }
     response.headers.set(key, value);
   }
   if (process.env.NODE_ENV === "production") {
@@ -96,6 +111,16 @@ function shouldSkipLocaleRouting(pathname: string): boolean {
  */
 export default async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // Embeddable tools (/embed/*) must be frameable by third-party sites.
+  // Match both the raw and locale-stripped path (/fr/embed/... rewrites).
+  const internalPath = stripLocalePrefix(pathname);
+  const frameable =
+    pathname === "/embed" ||
+    pathname.startsWith("/embed/") ||
+    internalPath === "/embed" ||
+    internalPath.startsWith("/embed/");
+  const frameOpts = frameable ? { frameable: true } : undefined;
 
   // ── API rate limiting (before session refresh) ────────────────────
   // Rate-limit /api/chat BEFORE the Supabase session refresh so an
@@ -179,7 +204,7 @@ export default async function proxy(request: NextRequest) {
           secure: process.env.NODE_ENV === "production",
         });
       }
-      return applySecurityHeaders(rewrite);
+      return applySecurityHeaders(rewrite, frameOpts);
     }
 
     // No locale prefix — redirect to /fr/* only if the user prefers French
@@ -228,7 +253,7 @@ export default async function proxy(request: NextRequest) {
   // metadata, which can be tampered with). No middleware-level check here
   // to avoid relying on client-controllable JWT claims.
 
-  return applySecurityHeaders(response);
+  return applySecurityHeaders(response, frameOpts);
 }
 
 export const config = {

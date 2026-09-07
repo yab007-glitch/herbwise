@@ -111,6 +111,15 @@
     "featureAiTitle": "Virtual herbalist",
     "featureAiDescription": "Ask questions about herbs, remedies, and safety. Evidence-based answers with citations."
   },
+  "embed": {
+    "title": "Check an herb + drug combo",
+    "herbPlaceholder": "Herb name (e.g. Turmeric)",
+    "medPlaceholder": "Medication (e.g. warfarin)",
+    "checkButton": "Check interaction",
+    "emptyError": "Enter an herb or a medication.",
+    "sameError": "Enter two different products.",
+    "poweredBy": "Powered by HerbAlly — free evidence-based herb guide"
+  },
   "herbs": {
     "title": "Medicinal Herbs Database",
     "subtitle": "Explore 2,700+ herbs with evidence-based information",
@@ -569,7 +578,11 @@
     "cGarlic": "Garlic",
     "cKava": "Kava",
     "cMilkThistle": "Milk Thistle",
-    "cAshwagandha": "Ashwagandha"
+    "cAshwagandha": "Ashwagandha",
+    "embedTitle": "Embed this checker on your site",
+    "embedBody": "Free for clinics, schools, and health blogs. Paste the snippet below — includes a HerbAlly attribution link.",
+    "embedCopy": "Copy snippet",
+    "embedCopied": "Copied!"
   },
   "auth": {
     "login": {
